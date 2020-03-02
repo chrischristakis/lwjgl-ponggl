@@ -3,25 +3,24 @@ package com.chrischristakis;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL30;
 
+import com.chrischristakis.gfx.Shader;
+import com.chrischristakis.gfx.VAO;
 import com.chrischristakis.input.KeyInput;
-import com.chrischristakis.utils.BufferUtils;
-import com.chrischristakis.utils.FileUtils;
 
 public class Main implements Runnable
 {
 	private long window;
-	public static final int WIDTH = 1100, HEIGHT = 800;
+	public static final int WIDTH = 1000, HEIGHT = 800;
 	public static boolean running = false;
 	private Thread thread;
+	
+	private VAO mesh;
 	
 	public void start()
 	{
@@ -66,64 +65,22 @@ public class Main implements Runnable
 	
 	private void test()
 	{
-		//SHADERS
-		//---------------------------------
-		int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertexShader, FileUtils.readFileAsString("shaders/shader.vert"));
-		glCompileShader(vertexShader);
-		if(glGetShaderi(vertexShader, GL_COMPILE_STATUS) == GL_FALSE)
-		{
-			System.err.println("ERROR::SHADER::VERTEX::COMPILATION_FAILED");
-			System.err.println(glGetShaderInfoLog(vertexShader));
-			return;
-		}
-		
-		int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragmentShader, FileUtils.readFileAsString("shaders/shader.frag"));
-		glCompileShader(fragmentShader);
-		if(glGetShaderi(fragmentShader, GL_COMPILE_STATUS) == GL_FALSE)
-		{
-			System.err.println("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED");
-			System.err.println(glGetShaderInfoLog(fragmentShader));
-			return;
-		}
-		
-		int program = glCreateProgram();
-		glAttachShader(program, vertexShader);
-		glAttachShader(program, fragmentShader);
-		glValidateProgram(program);
-		glLinkProgram(program);
-		
-		glDeleteShader(vertexShader);
-		glDeleteShader(fragmentShader);
-		//---------------------------------
-		
-		//VERTEXARRAY STUFF
-		//---------------------------------
+		Shader shader = new Shader("shaders/shader.vert", "shaders/shader.frag");
 		
 		float vertices[] = {
 			//POS					//COL
-			-0.5f, -0.5f, 0.0f, 	1.0f, 0.0f, 0.0f,
-			 0.5f, -0.5f, 0.0f,		1.0f, 0.0f, 0.0f,
-			 0.0f,  0.5f, 0.0f, 	0.0f, 0.0f, 1.0f
+			-0.2f, -0.7f, 0.0f, 	1.0f, 0.0f, 0.0f,
+			-0.2f,  0.7f, 0.0f,		0.0f, 0.0f, 1.0f,
+			 0.2f, -0.7f, 0.0f,		0.0f, 1.0f, 0.0f,
+			 0.2f,  0.7f, 0.0f, 	1.0f, 0.0f, 0.0f
+		};
+		byte indices[] = {
+				0, 2, 3,
+				0, 1, 3
 		};
 		
-		int VBO, VAO;
-		VBO = glGenBuffers();
-		VAO = glGenVertexArrays();
-		
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, BufferUtils.createFloatArray(vertices), GL_STATIC_DRAW);
-		//Pos
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * 4, 0);
-		glEnableVertexAttribArray(0);
-		//Col
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * 4, 3 * 4);
-		glEnableVertexAttribArray(1);
-		
-		glUseProgram(program);
-		//---------------------------------
+		mesh = new VAO(vertices, indices); //Test mesh
+		shader.use();
 	}
 	
 	public void run()
@@ -179,8 +136,8 @@ public class Main implements Runnable
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		
+		mesh.render();
+	
 		glfwSwapBuffers(window);
 	}
 	

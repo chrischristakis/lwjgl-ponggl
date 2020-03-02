@@ -8,9 +8,17 @@ public class BufferUtils
 {
 	private BufferUtils() {}
 
-	public static FloatBuffer createFloatArray(float[] arr)
+	public static FloatBuffer createFloatBuffer(float[] arr)
 	{
 		FloatBuffer result = ByteBuffer.allocateDirect(arr.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		result.put(arr);
+		result.position(0);
+		return result;
+	}
+	
+	public static ByteBuffer createByteBuffer(byte[] arr)
+	{
+		ByteBuffer result = ByteBuffer.allocateDirect(arr.length * 4).order(ByteOrder.nativeOrder());
 		result.put(arr);
 		result.position(0);
 		return result;
