@@ -24,10 +24,10 @@ public class VAO
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(vertData), GL_STATIC_DRAW);
 		//Pos
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * 4, 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * 4, 0); //change
 		glEnableVertexAttribArray(0);
 		//Col
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * 4, 3 * 4);
+		glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * 4, 3 * 4); //change 
 		glEnableVertexAttribArray(1);
 		
 		//EBO
