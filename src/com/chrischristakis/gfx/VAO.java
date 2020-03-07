@@ -13,7 +13,7 @@ public class VAO
 	private int vao, vbo, ebo;
 	private int numOfVerts;
 	
-	public VAO(float[] vertData, byte indices[]) //POSITION(3) | COLOR(3)
+	public VAO(float[] vertData, byte indices[])
 	{
 		numOfVerts = indices.length;
 		vbo = glGenBuffers();
@@ -23,11 +23,10 @@ public class VAO
 		glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(vertData), GL_STATIC_DRAW);
-		//Pos
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * 4, 0); //change
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * 4, 0);
 		glEnableVertexAttribArray(0);
 		//Col
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * 4, 3 * 4); //change 
+		glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * 4, 3 * 4); 
 		glEnableVertexAttribArray(1);
 		
 		//EBO

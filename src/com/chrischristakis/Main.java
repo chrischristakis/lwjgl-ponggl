@@ -10,8 +10,9 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import com.chrischristakis.gfx.Shader;
-import com.chrischristakis.gfx.VAO;
 import com.chrischristakis.input.KeyInput;
+import com.chrischristakis.scene.Paddle;
+import com.chrischristakis.utils.ShaderUtils;
 
 public class Main implements Runnable
 {
@@ -20,7 +21,7 @@ public class Main implements Runnable
 	public static boolean running = false;
 	private Thread thread;
 	
-	private VAO mesh;
+	private Paddle p1, p2;
 	
 	public void start()
 	{
@@ -55,32 +56,16 @@ public class Main implements Runnable
 		GL.createCapabilities(); //IMPORTANT, OPENS THE OPENGL BINDINGS
 		glViewport(0, 0, WIDTH, HEIGHT);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		//glfwSwapInterval(1); vsync
+		//glfwSwapInterval(1);
 		
 		System.out.println("LWJGL version: " + Version.getVersion());
 		System.out.println("OpenGL version: " + glGetString(GL_VERSION));
 		
-		test();
-	}
-	
-	private void test()
-	{
-		Shader shader = new Shader("shaders/shader.vert", "shaders/shader.frag");
+		ShaderUtils.init();
+		ShaderUtils.paddle.use();
 		
-		float vertices[] = {
-			//POS					//COL
-			-0.2f, -0.7f, 0.0f, 	1.0f, 0.0f, 0.0f,
-			-0.2f,  0.7f, 0.0f,		0.0f, 0.0f, 1.0f,
-			 0.2f, -0.7f, 0.0f,		0.0f, 1.0f, 0.0f,
-			 0.2f,  0.7f, 0.0f, 	1.0f, 0.0f, 0.0f
-		};
-		byte indices[] = {
-				0, 2, 3,
-				0, 1, 3
-		};
-		
-		mesh = new VAO(vertices, indices); //Test mesh
-		shader.use();
+		p1 = new Paddle(-0.9f, 0.0f, GLFW_KEY_W, GLFW_KEY_S);
+		p2 = new Paddle(0.9f, 0.0f, GLFW_KEY_UP, GLFW_KEY_DOWN);
 	}
 	
 	public void run()
@@ -96,6 +81,7 @@ public class Main implements Runnable
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 		int updates = 0;
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		while(running && !glfwWindowShouldClose(window))
 		{
 			now = System.nanoTime();
@@ -130,14 +116,17 @@ public class Main implements Runnable
 	private void update()
 	{
 		glfwPollEvents();
+		p1.update();
+		p2.update();
 	}
 	
 	private void render()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		mesh.render();
 	
+		p1.render();
+		p2.render();
+		
 		glfwSwapBuffers(window);
 	}
 	

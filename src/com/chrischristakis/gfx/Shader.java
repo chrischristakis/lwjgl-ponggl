@@ -1,65 +1,43 @@
 package com.chrischristakis.gfx;
 
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
-import com.chrischristakis.utils.FileUtils;
+import java.nio.FloatBuffer;
+
+import org.joml.Matrix4f;
+import org.lwjgl.BufferUtils;
+
+import com.chrischristakis.utils.ShaderUtils;
 
 public class Shader
 {
 	
-	private int programID;
+	private int id;
 	
 	public Shader(String vPath, String fPath)
 	{
-		programID = loadShaderFromFile(vPath, fPath);
+		id = ShaderUtils.loadShaderFromFile(vPath, fPath);
 	}
 	
-	private int loadShaderFromFile(String vPath, String fPath)
+	public int getLocation(String name) //OPTIMIZE USING MAP
 	{
-		//VERT
-		int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertexShader, FileUtils.readFileAsString(vPath));
-		glCompileShader(vertexShader);
-		if(glGetShaderi(vertexShader, GL_COMPILE_STATUS) == GL_FALSE)
-		{
-			System.err.println("ERROR::SHADER::VERTEX::COMPILATION_FAILED");
-			System.err.println(glGetShaderInfoLog(vertexShader));
-			return 0;
-		}
-		
-		//FRAG
-		int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragmentShader, FileUtils.readFileAsString(fPath));
-		glCompileShader(fragmentShader);
-		if(glGetShaderi(fragmentShader, GL_COMPILE_STATUS) == GL_FALSE)
-		{
-			System.err.println("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED");
-			System.err.println(glGetShaderInfoLog(fragmentShader));
-			return 0;
-		}
-		
-		//PROGRAM
-		int result = glCreateProgram();
-		glAttachShader(result, vertexShader);
-		glAttachShader(result, fragmentShader);
-		glValidateProgram(result);
-		glLinkProgram(result);
-		
-		glDeleteShader(vertexShader);
-		glDeleteShader(fragmentShader);
-		
-		return result;
+		int loc = glGetUniformLocation(id, name);
+		if(loc == -1)
+			System.err.println("Cannot find uniform with name " + name);
+	
+		return loc;
 	}
 	
-	public int getProgram()
+	public void setMat4f(String name, Matrix4f mat)
 	{
-		return programID;
+		FloatBuffer fb = BufferUtils.createFloatBuffer(16);
+		mat.get(fb);
+		glUniformMatrix4fv(getLocation(name), false, fb);
 	}
 	
 	public void use()
 	{
-		glUseProgram(programID);
+		glUseProgram(id);
 	}
 
 }
