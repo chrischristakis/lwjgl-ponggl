@@ -14,6 +14,7 @@ public class Paddle
 	private Vector3f pos; //Position vector
 	private Matrix4f modelMat;
 	private float width = 0.02f, height = 0.24f;
+	private float speed = 0.01f;
 	
 	private int upIn, downIn;
 	
@@ -52,9 +53,9 @@ public class Paddle
 	public void update()
 	{
 		if(KeyInput.isPressed(upIn))
-			pos.y += 0.01f;
+			pos.y += speed;
 		if(KeyInput.isPressed(downIn))
-			pos.y -= 0.01f;
+			pos.y -= speed;
 		
 		//BOUNDS
 		if(pos.y + height/2.0f > 1.0f)

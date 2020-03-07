@@ -9,9 +9,8 @@ import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
-import com.chrischristakis.gfx.Shader;
 import com.chrischristakis.input.KeyInput;
-import com.chrischristakis.scene.Paddle;
+import com.chrischristakis.scene.Scene;
 import com.chrischristakis.utils.ShaderUtils;
 
 public class Main implements Runnable
@@ -21,7 +20,7 @@ public class Main implements Runnable
 	public static boolean running = false;
 	private Thread thread;
 	
-	private Paddle p1, p2;
+	private Scene scene;
 	
 	public void start()
 	{
@@ -64,8 +63,7 @@ public class Main implements Runnable
 		ShaderUtils.init();
 		ShaderUtils.paddle.use();
 		
-		p1 = new Paddle(-0.9f, 0.0f, GLFW_KEY_W, GLFW_KEY_S);
-		p2 = new Paddle(0.9f, 0.0f, GLFW_KEY_UP, GLFW_KEY_DOWN);
+		scene = new Scene();
 	}
 	
 	public void run()
@@ -116,16 +114,14 @@ public class Main implements Runnable
 	private void update()
 	{
 		glfwPollEvents();
-		p1.update();
-		p2.update();
+		scene.update();
 	}
 	
 	private void render()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-		p1.render();
-		p2.render();
+		scene.render();
 		
 		glfwSwapBuffers(window);
 	}
