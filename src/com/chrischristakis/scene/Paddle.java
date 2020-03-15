@@ -19,7 +19,7 @@ public class Paddle extends Entity
 	public Paddle(float x, float y, int upIn, int downIn)
 	{
 		super(x, y, 0.02f, 0.24f);
-		
+		//test comment
 		//Key input variables.
 		this.upIn = upIn;
 		this.downIn = downIn;
