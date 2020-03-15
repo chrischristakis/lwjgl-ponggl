@@ -2,6 +2,9 @@ package com.chrischristakis.scene;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.util.Random;
+
+import org.joml.Math;
 import org.joml.Matrix4f;
 
 import com.chrischristakis.gfx.VAO;
@@ -13,6 +16,7 @@ public class Scene
 	private VAO mesh; //Background line.
 	private Paddle p1, p2;
 	private Ball ball;
+	private Random rand = new Random();
 	
 	public Scene()
 	{
@@ -42,11 +46,40 @@ public class Scene
 		ball.render();
 	}
 	
+	private float dampening;
+	private long elapsed = 0L;
 	public void update()
 	{
+		if(elapsed == 0)
+			elapsed = System.currentTimeMillis();
+		
 		p1.update();
 		p2.update();
 		ball.update();
+		
+		dampening = 3.1f + rand.nextFloat()*(8.4f - 3.1f); //Make a random dampening value to make paddle bounces still fair, but more interesting.
+		if(p1.collides(ball))
+		{
+			ball.position.x = p1.position.x + p1.width;
+			ball.velX = Math.abs(ball.velX);
+			//velY is dependent on distance from ball centre to paddle centre, the closer, the closer to 0 velY is.
+			if(ball.position.y > p1.position.y) ball.velY = Math.abs(ball.position.y - p1.position.y)/dampening;
+			else ball.velY = -Math.abs((p1.position.y) -(ball.position.y))/dampening;
+		}
+		if(p2.collides(ball))
+		{
+			ball.position.x = p2.position.x - ball.width;
+			ball.velX = -Math.abs(ball.velX);
+			if(ball.position.y > p2.position.y) ball.velY = Math.abs(ball.position.y - p2.position.y)/dampening;
+			else ball.velY = -Math.abs((p2.position.y) - (ball.position.y))/dampening;
+		}
+		
+		if(System.currentTimeMillis() - elapsed >= 2100)
+		{
+			elapsed = System.currentTimeMillis();
+			if(Math.abs(ball.velX) < Ball.TERMINAL_VELX) ball.velX += ball.velX * 0.1;
+			else ball.velX = Ball.TERMINAL_VELX * ball.velX/Math.abs(ball.velX); //unit vector for correct direction.
+		}
 	}
 
 }

@@ -55,7 +55,7 @@ public class Main implements Runnable
 		GL.createCapabilities(); //IMPORTANT, OPENS THE OPENGL BINDINGS
 		glViewport(0, 0, WIDTH, HEIGHT);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		//glfwSwapInterval(1);
+		glfwSwapInterval(1);
 		
 		System.out.println("LWJGL version: " + Version.getVersion());
 		System.out.println("OpenGL version: " + glGetString(GL_VERSION));

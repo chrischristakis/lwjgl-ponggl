@@ -6,20 +6,20 @@ import com.chrischristakis.utils.ShaderUtils;
 
 import org.joml.*;
 
-public class Paddle
+public class Paddle extends Entity
 {
 
 	private VAO mesh;
 	
-	private Vector3f pos; //Position vector
 	private Matrix4f modelMat;
-	private float width = 0.02f, height = 0.24f;
-	private float speed = 0.01f;
+	private float speed = 0.032f;
 	
 	private int upIn, downIn;
 	
 	public Paddle(float x, float y, int upIn, int downIn)
 	{
+		super(x, y, 0.02f, 0.24f);
+		
 		//Key input variables.
 		this.upIn = upIn;
 		this.downIn = downIn;
@@ -37,31 +37,29 @@ public class Paddle
 		};
 		
 		mesh = new VAO(vertices, indices);
-		pos = new Vector3f(x, y, 1.0f);
 		
 		modelMat = new Matrix4f();
-		ShaderUtils.paddle.setMat4f("modelMat", modelMat.translate(pos));
 	}
 	
 	public void render()
 	{
 		modelMat.identity();
-		ShaderUtils.paddle.setMat4f("modelMat", modelMat.translate(pos));
+		ShaderUtils.paddle.setMat4f("modelMat", modelMat.translate(position));
 		mesh.render();
 	}
 	
 	public void update()
 	{
 		if(KeyInput.isPressed(upIn))
-			pos.y += speed;
+			position.y += speed;
 		if(KeyInput.isPressed(downIn))
-			pos.y -= speed;
+			position.y -= speed;
 		
 		//BOUNDS
-		if(pos.y + height/2.0f > 1.0f)
-			pos.y = 1.0f - height/2.0f;
-		if(pos.y - height/2.0f < -1.0f)
-			pos.y = -1.0f + height/2.0f;
+		if(position.y + height/2.0f > 1.0f)
+			position.y = 1.0f - height/2.0f;
+		if(position.y - height/2.0f < -1.0f)
+			position.y = -1.0f + height/2.0f;
 	}
 
 }
