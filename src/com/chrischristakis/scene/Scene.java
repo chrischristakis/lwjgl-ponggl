@@ -18,6 +18,8 @@ public class Scene
 	private Ball ball;
 	private Random rand = new Random();
 	
+	public static int score1 = 0, score2 = 0;
+	
 	public Scene()
 	{
 		float[] vertices = {
@@ -53,6 +55,17 @@ public class Scene
 		if(elapsed == 0)
 			elapsed = System.currentTimeMillis();
 		
+		if(score1 >= 5)
+		{
+			System.out.println("Game over! Player 1 wins!");
+			System.exit(0);
+		}
+		if(score2 >= 5)
+		{
+			System.out.println("Game over! Player 2 wins!");
+			System.exit(0);
+		}
+		
 		p1.update();
 		p2.update();
 		ball.update();
@@ -74,12 +87,21 @@ public class Scene
 			else ball.velY = -Math.abs((p2.position.y) - (ball.position.y))/dampening;
 		}
 		
-		if(System.currentTimeMillis() - elapsed >= 2100)
+		if(System.currentTimeMillis() - elapsed >= 2500)
 		{
 			elapsed = System.currentTimeMillis();
 			if(Math.abs(ball.velX) < Ball.TERMINAL_VELX) ball.velX += ball.velX * 0.1;
 			else ball.velX = Ball.TERMINAL_VELX * ball.velX/Math.abs(ball.velX); //unit vector for correct direction.
 		}
+	}
+	
+	public static void addPoint(int paddleNum)
+	{
+		if(paddleNum == 1)
+			score1++;
+		if(paddleNum == 2)
+			score2++;
+		System.out.println("P1: " + score1 + " | P2: " + score2);
 	}
 
 }

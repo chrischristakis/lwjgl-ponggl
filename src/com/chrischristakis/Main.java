@@ -97,7 +97,7 @@ public class Main implements Runnable
 			
 			if(System.currentTimeMillis() - timer >= 1000)
 			{
-				System.out.printf("UPS: %d | FPS: %d\n", updates, frames);
+				//System.out.printf("UPS: %d | FPS: %d\n", updates, frames);
 				frames = 0;
 				updates = 0;
 				timer = System.currentTimeMillis();

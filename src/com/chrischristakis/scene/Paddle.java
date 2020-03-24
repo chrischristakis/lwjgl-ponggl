@@ -12,7 +12,7 @@ public class Paddle extends Entity
 	private VAO mesh;
 	
 	private Matrix4f modelMat;
-	private float speed = 0.032f;
+	private float speed = 0.027f;
 	
 	private int upIn, downIn;
 	

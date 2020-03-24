@@ -9,7 +9,7 @@ import com.chrischristakis.utils.ShaderUtils;
 
 public class Ball extends Entity
 {
-	protected static final float size = 0.03f, TERMINAL_VELX = 0.040f;
+	protected static final float size = 0.03f, TERMINAL_VELX = 0.037f;
 	private VAO mesh;
 	
 	private Matrix4f modelMat;
@@ -48,13 +48,13 @@ public class Ball extends Entity
 	{
 		if(position.x - size/2.0f < -1f)
 		{
-			position.x = -1f + size/2.0f;
-			velX = Math.abs(velX);
+			reset();
+			Scene.addPoint(2);
 		}
 		if(position.x + size/2.0f > 1f)
 		{
-			position.x = 1f - size/2.0f;
-			velX = -Math.abs(velX);
+			reset();
+			Scene.addPoint(1);
 		}
 		if(position.y - size/2.0f < -1f)
 		{
@@ -69,6 +69,14 @@ public class Ball extends Entity
 		
 		position.y += velY;
 		position.x += velX;
+	}
+	
+	private void reset()
+	{
+		position.x = 0;
+		position.y = 0;
+		velY = 0;
+		velX = (rand.nextBoolean()? -1 : 1) * 0.013f;
 	}
 
 }
